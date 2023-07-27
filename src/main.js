@@ -1,8 +1,11 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from "vue";
+import App from "./App.vue";
 
-Vue.config.productionTip = false
+import "./assets/css/tailwind.css";
+
+Vue.config.productionTip = false;
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  el: "#app", // Binds to the #app element in public/index.html; Only works with this ID within codesandbox
+  render: (h) => h(App),
+});
