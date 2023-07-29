@@ -89,31 +89,12 @@
             <p>25%-75%</p>
           </th>
         </thead>
-
-        <tr
+        <AcademicDataRow
           v-for="entry in athlete.report"
           :key="entry.school"
-          class="odd:bg-oddRow"
-        >
-          <td class="p-2">{{ entry.school }}</td>
-          <td class="text-center">{{ entry.division }}</td>
-          <td>{{ entry.conference }}</td>
-          <td class="text-center">{{ entry.ranking }}</td>
-
-          <td class="text-center">{{ gpaToTwoDecimals(entry.gpa.min) }}</td>
-          <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["25%"]) }}</td>
-          <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["50%"]) }}</td>
-          <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["75%"]) }}</td>
-          <td class="text-center">{{ gpaToTwoDecimals(entry.gpa.max) }}</td>
-
-          <td class="text-center">
-            {{ entry.sat.reading.min }} - {{ entry.sat.reading.max }}
-          </td>
-          <td class="text-center">
-            {{ entry.sat.math.min }} - {{ entry.sat.math.max }}
-          </td>
-          <td class="text-center">{{ entry.act.min }} - {{ entry.act.max }}</td>
-        </tr>
+          :entry="entry"
+          :gpaToTwoDecimals="gpaToTwoDecimals"
+        />
       </table>
     </div>
     <div class="mt-36 mb-6">
@@ -136,17 +117,15 @@
 </template>
 
 <script>
+import AcademicDataRow from "./AcademicDataRow.vue";
+
 export default {
   name: "AcademicFitReport",
   props: {
     athlete: { type: Object, required: false },
   },
-  computed: {
-    gpaToTwoDecimals() {
-      return (gpa) => {
-        return gpa.toFixed(2);
-      };
-    },
+  components: {
+    AcademicDataRow,
   },
 };
 </script>
