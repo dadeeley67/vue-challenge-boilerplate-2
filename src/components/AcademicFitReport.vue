@@ -93,7 +93,7 @@
           v-for="entry in athlete.report"
           :key="entry.school"
           :entry="entry"
-          :gpaToTwoDecimals="gpaToTwoDecimals"
+          :athleteGpa="athlete.gpa"
         />
       </table>
     </div>

@@ -7,7 +7,9 @@
 
     <td class="text-center">{{ gpaToTwoDecimals(entry.gpa.min) }}</td>
     <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["25%"]) }}</td>
-    <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["50%"]) }}</td>
+
+    <GpaColumn :athleteGpa="athleteGpa" :gpaSchool="entry.gpa['50%']" />
+
     <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["75%"]) }}</td>
     <td class="text-center">{{ gpaToTwoDecimals(entry.gpa.max) }}</td>
 
@@ -22,15 +24,17 @@
 </template>
 
 <script>
+import GpaColumn from "./GpaColumn.vue";
+import mixin from "@/mixins/mixin";
 export default {
   name: "AcademicDataRow",
+  mixins: [mixin],
+  components: {
+    GpaColumn,
+  },
   props: {
     entry: Object,
-  },
-  methods: {
-    gpaToTwoDecimals(gpa) {
-      return gpa.toFixed(2);
-    },
+    athleteGpa: Number,
   },
 };
 </script>
