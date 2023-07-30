@@ -52,10 +52,10 @@
       </div>
     </div>
 
-    <div class="container mt-14">
+    <div class="container mt-14 overflow-x-scroll">
       <table class="text-xs table-auto w-full">
         <thead class="bg-secondary text-white">
-          <th>School Name</th>
+          <th class="sticky left-0 bg-secondary">School Name</th>
           <th>Athletic Div</th>
           <th>Conference</th>
           <th>

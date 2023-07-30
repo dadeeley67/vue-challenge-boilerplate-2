@@ -1,6 +1,8 @@
 <template>
-  <tr class="odd:bg-oddRow">
-    <td class="p-2">{{ entry.school }}</td>
+  <tr class="odd:bg-oddRow group">
+    <td class="p-2 sticky left-0 group-odd:bg-oddRow group-even:bg-white">
+      {{ entry.school }}
+    </td>
     <td class="text-center">{{ entry.division }}</td>
     <td>{{ entry.conference }}</td>
     <td class="text-center">{{ entry.ranking }}</td>
