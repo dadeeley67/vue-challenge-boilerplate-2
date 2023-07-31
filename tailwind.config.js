@@ -22,6 +22,12 @@ module.exports = {
         schoolGpaUnder: "#a6a6d2",
         schoolGpaUnderLessThan: "#87abe1",
         schoolGpaUnderMoreThan: "#75ace5",
+        avatarPlaceHolder: "#f1603c",
+        avatarPlaceHolder2: "#6082fa",
+        avatarPlaceHolder3: "#827cb8",
+        avatarPlaceHolder4: "#0097a4",
+        avatarPlaceHolder5: "#ffe066",
+        avatarPlaceHolder6: "#ffa94d",
       },
       fontSize: {
         xxs: "0.6rem",
