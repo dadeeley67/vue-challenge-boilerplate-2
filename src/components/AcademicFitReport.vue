@@ -2,13 +2,15 @@
   <div class="mt-16 ml-12 mr-12 mb-16 md:mr-0 md:mb-0">
     <div class="flex sm:flex-row flex-col">
       <img
-        v-if="athlete.profile_image"
+        v-show="doesProfilePictureExist"
         class="w-24 h-24 rounded-full mr-2 order-2 sm:order-1 sm:mt-0 mt-4"
         :src="athlete.profile_image"
         :alt="athlete.name"
+        id="athleteImage"
       />
       <div
-        v-else
+        v-show="!doesProfilePictureExist"
+        id="avatarPlaceholder"
         class="mr-2 order-2 sm:order-1 sm:mt-0 mt-4 inline-flex items-center justify-center w-24 h-24 overflow-hidden rounded-full"
         :class="determineAvatarBackgroundColor"
       >
@@ -17,10 +19,15 @@
         }}</span>
       </div>
 
-      <div class="info sm:flex order-3 sm:order-2 sm:mt-0 mt-4">
+      <div
+        id="athleteStats"
+        class="info sm:flex order-3 sm:order-2 sm:mt-0 mt-4"
+      >
         <div>
           <h2 class="text-primary font-bold text-xl">
             <input
+              id="athleteName"
+              data-cy="submit-athlete-name"
               type="text"
               :value="athlete.name"
               @keyup.enter="setAthleteName"
@@ -67,7 +74,7 @@
           </div>
         </div>
       </div>
-      <div class="sm:flex sm:flex-1 sm:flex-col order-1 sm:order-3">
+      <div id="srLogo" class="sm:flex sm:flex-1 sm:flex-col order-1 sm:order-3">
         <img
           class="w-60 h-auto sm:self-end"
           src="@/assets/sr-logo.png"
@@ -79,11 +86,13 @@
       </div>
     </div>
 
-    <div class="container mt-14 overflow-x-scroll">
+    <div id="report" class="container mt-14 overflow-x-scroll">
       <table class="text-xs table-auto w-full">
         <thead class="bg-secondary text-white">
-          <th class="sticky left-0 bg-secondary">School Name</th>
-          <th>Athletic Div</th>
+          <th id="schoolNameColumn" class="sticky left-0 bg-secondary">
+            School Name
+          </th>
+          <th id="athleticDiv">Athletic Div</th>
           <th>Conference</th>
           <th>
             Ranking*
@@ -202,6 +211,9 @@ export default {
     athlete() {
       return this.store.athlete;
     },
+    doesProfilePictureExist() {
+      return this.athlete.profile_image !== "";
+    },
     getAthelteInitialsCapitalized: function () {
       if (this.athlete.name) {
         let name = this.splitName(this.athlete.name);
@@ -230,22 +242,22 @@ export default {
 
           switch (group()) {
             case 0:
-              return "bg-avatarPlaceHolder";
+              return "bg-avatarPlaceholder";
             case 1:
-              return "bg-avatarPlaceHolder2";
+              return "bg-avatarPlaceholder2";
             case 2:
-              return "bg-avatarPlaceHolder3";
+              return "bg-avatarPlaceholder3";
             case 3:
-              return "bg-avatarPlaceHolder4";
+              return "bg-avatarPlaceholder4";
             case 4:
-              return "bg-avatarPlaceHolder5";
+              return "bg-avatarPlaceholder5";
             case 5:
-              return "bg-avatarPlaceHolder6";
+              return "bg-avatarPlaceholder6";
           }
         }
       }
 
-      return "bg-avatarPlaceHolder";
+      return "bg-avatarPlaceholder";
     },
   },
 };
