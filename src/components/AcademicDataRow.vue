@@ -7,13 +7,13 @@
     <td>{{ entry.conference }}</td>
     <td class="text-center">{{ entry.ranking }}</td>
 
-    <td class="text-center">{{ gpaToTwoDecimals(entry.gpa.min) }}</td>
-    <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["25%"]) }}</td>
+    <td class="text-center">{{ useGpaToTwoDecimals(entry.gpa.min) }}</td>
+    <td class="text-center">{{ useGpaToTwoDecimals(entry.gpa["25%"]) }}</td>
 
     <GpaColumn :athleteGpa="athleteGpa" :gpaSchool="entry.gpa['50%']" />
 
-    <td class="text-center">{{ gpaToTwoDecimals(entry.gpa["75%"]) }}</td>
-    <td class="text-center">{{ gpaToTwoDecimals(entry.gpa.max) }}</td>
+    <td class="text-center">{{ useGpaToTwoDecimals(entry.gpa["75%"]) }}</td>
+    <td class="text-center">{{ useGpaToTwoDecimals(entry.gpa.max) }}</td>
 
     <td class="text-center">
       {{ entry.sat.reading.min }} - {{ entry.sat.reading.max }}
@@ -25,18 +25,13 @@
   </tr>
 </template>
 
-<script>
+<script setup>
+import { defineProps } from "vue";
 import GpaColumn from "./GpaColumn.vue";
-import mixin from "@/mixins/mixin";
-export default {
-  name: "AcademicDataRow",
-  mixins: [mixin],
-  components: {
-    GpaColumn,
-  },
-  props: {
-    entry: Object,
-    athleteGpa: Number,
-  },
-};
+import { useGpaToTwoDecimals } from "@/composables/useGpaToTwoDecimals";
+
+const { entry, athleteGpa } = defineProps({
+  entry: Object,
+  athleteGpa: Number,
+});
 </script>

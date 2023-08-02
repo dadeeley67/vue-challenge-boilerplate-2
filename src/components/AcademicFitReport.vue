@@ -152,113 +152,107 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from "vue";
+
 import AcademicDataRow from "./AcademicDataRow.vue";
 import { useAthleteStore } from "@/stores/athlete";
 
-export default {
-  name: "AcademicFitReport",
-  data() {
-    return {
-      store: useAthleteStore(),
-      nameError: false,
-      alphabet: "abcdefghijklmnopqrstuvwxyz".split(""),
-      groups: [],
-    };
-  },
-  components: {
-    AcademicDataRow,
-  },
-  methods: {
-    setAthleteName(e) {
-      e.target.value = this.removeNumbersFromString(e.target.value);
-      e.target.value = this.trimEndOfStringWhitespace(e.target.value);
+const store = useAthleteStore();
 
-      if (e.target.value === this.store.athlete.name) {
-        return;
-      }
+const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+let groups = [];
+let groupSize = Math.ceil(alphabet.length / 6);
+while (alphabet.length > 0) {
+  groups.push(alphabet.splice(0, groupSize));
+}
 
-      const words = this.splitName(e.target.value);
+const nameError = ref(false);
 
-      this.nameError = words.length < 2 || words[1].length === 0;
-      if (!this.nameError) {
-        this.store.setAthleteName(e.target.value);
-        e.target.blur();
-      }
-    },
-    trimEndOfStringWhitespace(str) {
-      return str.replace(/\s*$/, "");
-    },
-    isNameMoreThanOneWord(name) {
-      let words = name.split(" ");
-      return words.length > 1;
-    },
-    splitName(name) {
-      return name.split(" ");
-    },
-    removeNumbersFromString(str) {
-      return str.replace(/\d+/g, "");
-    },
-  },
-  created() {
-    let groupSize = Math.ceil(this.alphabet.length / 6);
+const trimEndOfStringWhitespace = (str) => {
+  return str.replace(/\s*$/, "");
+};
 
-    while (this.alphabet.length > 0) {
-      this.groups.push(this.alphabet.splice(0, groupSize));
-    }
-  },
-  computed: {
-    athlete() {
-      return this.store.athlete;
-    },
-    doesProfilePictureExist() {
-      return this.athlete.profile_image !== "";
-    },
-    getAthelteInitialsCapitalized: function () {
-      if (this.athlete.name) {
-        let name = this.splitName(this.athlete.name);
-        return (
-          name[0][0].toUpperCase() + name[name.length - 1][0].toUpperCase()
-        );
-      } else {
-        return "";
-      }
-    },
-    determineAvatarBackgroundColor: function () {
-      if (this.isNameMoreThanOneWord(this.athlete.name)) {
-        let words = this.splitName(this.athlete.name);
-        let lengthOfLastName =
-          this.athlete.name.split(" ")[words.length - 1].length;
-        if (lengthOfLastName > 1) {
-          let initial = this.athlete.name.split(" ")[words.length - 1][0];
+const splitName = (name) => {
+  return name.split(" ");
+};
 
-          let group = () => {
-            for (let i = 0; i < this.groups.length; i++) {
-              if (this.groups[i].includes(initial.toLowerCase())) {
-                return i;
-              }
-            }
-          };
+const removeNumbersFromString = (str) => {
+  return str.replace(/\d+/g, "");
+};
 
-          switch (group()) {
-            case 0:
-              return "bg-avatarPlaceholder";
-            case 1:
-              return "bg-avatarPlaceholder2";
-            case 2:
-              return "bg-avatarPlaceholder3";
-            case 3:
-              return "bg-avatarPlaceholder4";
-            case 4:
-              return "bg-avatarPlaceholder5";
-            case 5:
-              return "bg-avatarPlaceholder6";
+const setAthleteName = (e) => {
+  e.target.value = removeNumbersFromString(e.target.value);
+  e.target.value = trimEndOfStringWhitespace(e.target.value);
+
+  if (e.target.value === store.athlete.name) {
+    return;
+  }
+
+  const words = splitName(e.target.value);
+
+  nameError.value = words.length < 2 || words[1].length === 0;
+  if (!nameError.value) {
+    store.setAthleteName(e.target.value);
+    e.target.blur();
+  }
+};
+
+const isNameMoreThanOneWord = (name) => {
+  return name.split(" ").length > 1;
+};
+
+const athlete = computed(() => {
+  return store.athlete;
+});
+
+const doesProfilePictureExist = computed(() => {
+  return athlete.value.profile_image !== "";
+});
+
+const getAthelteInitialsCapitalized = computed(() => {
+  if (athlete.value.name) {
+    let name = splitName(athlete.value.name);
+    return name[0][0].toUpperCase() + name[name.length - 1][0].toUpperCase();
+  } else {
+    return "";
+  }
+});
+
+const determineAvatarBackgroundColor = computed(() => {
+  if (isNameMoreThanOneWord(athlete.value.name)) {
+    let words = splitName(athlete.value.name);
+    let lengthOfLastName =
+      athlete.value.name.split(" ")[words.length - 1].length;
+    if (lengthOfLastName > 1) {
+      let initial = athlete.value.name.split(" ")[words.length - 1][0];
+
+      let group = () => {
+        for (let i = 0; i < groups.length; i++) {
+          if (groups[i].includes(initial.toLowerCase())) {
+            return i;
           }
         }
-      }
+      };
 
+      switch (group()) {
+        case 0:
+          return "bg-avatarPlaceholder";
+        case 1:
+          return "bg-avatarPlaceholder2";
+        case 2:
+          return "bg-avatarPlaceholder3";
+        case 3:
+          return "bg-avatarPlaceholder4";
+        case 4:
+          return "bg-avatarPlaceholder5";
+        case 5:
+          return "bg-avatarPlaceholder6";
+      }
+    } else {
       return "bg-avatarPlaceholder";
-    },
-  },
-};
+    }
+  }
+  return "bg-avatarPlaceholder";
+});
 </script>
