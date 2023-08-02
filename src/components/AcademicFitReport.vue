@@ -19,7 +19,18 @@
 
       <div class="info sm:flex order-3 sm:order-2 sm:mt-0 mt-4">
         <div>
-          <h2 class="text-primary font-bold text-xl">{{ athlete.name }}</h2>
+          <h2 class="text-primary font-bold text-xl">
+            <input
+              type="text"
+              :value="athlete.name"
+              @keyup.enter="setAthleteName"
+              v-on:focusout="setAthleteName"
+              class="hover:border-primary border-b-2 border-transparent focus:border-primary focus:outline-none"
+            />
+          </h2>
+          <div v-if="nameError" class="text-red-600">
+            Please enter at least two words.
+          </div>
           <div class="lg:grid lg:grid-cols-2">
             <ul>
               <li>
@@ -134,57 +145,107 @@
 
 <script>
 import AcademicDataRow from "./AcademicDataRow.vue";
+import { useAthleteStore } from "@/stores/athlete";
 
 export default {
   name: "AcademicFitReport",
-  props: {
-    athlete: { type: Object, required: false },
+  data() {
+    return {
+      store: useAthleteStore(),
+      nameError: false,
+      alphabet: "abcdefghijklmnopqrstuvwxyz".split(""),
+      groups: [],
+    };
   },
   components: {
     AcademicDataRow,
   },
+  methods: {
+    setAthleteName(e) {
+      e.target.value = this.removeNumbersFromString(e.target.value);
+      e.target.value = this.trimEndOfStringWhitespace(e.target.value);
+
+      if (e.target.value === this.store.athlete.name) {
+        return;
+      }
+
+      const words = this.splitName(e.target.value);
+
+      this.nameError = words.length < 2 || words[1].length === 0;
+      if (!this.nameError) {
+        this.store.setAthleteName(e.target.value);
+        e.target.blur();
+      }
+    },
+    trimEndOfStringWhitespace(str) {
+      return str.replace(/\s*$/, "");
+    },
+    isNameMoreThanOneWord(name) {
+      let words = name.split(" ");
+      return words.length > 1;
+    },
+    splitName(name) {
+      return name.split(" ");
+    },
+    removeNumbersFromString(str) {
+      return str.replace(/\d+/g, "");
+    },
+  },
+  created() {
+    let groupSize = Math.ceil(this.alphabet.length / 6);
+
+    while (this.alphabet.length > 0) {
+      this.groups.push(this.alphabet.splice(0, groupSize));
+    }
+  },
   computed: {
+    athlete() {
+      return this.store.athlete;
+    },
     getAthelteInitialsCapitalized: function () {
-      return this.athlete.name
-        .split(" ")
-        .map((name) => name[0].toUpperCase())
-        .join("");
+      if (this.athlete.name) {
+        let name = this.splitName(this.athlete.name);
+        return (
+          name[0][0].toUpperCase() + name[name.length - 1][0].toUpperCase()
+        );
+      } else {
+        return "";
+      }
     },
     determineAvatarBackgroundColor: function () {
-      let initial = this.athlete.name.split(" ")[1][0];
+      if (this.isNameMoreThanOneWord(this.athlete.name)) {
+        let words = this.splitName(this.athlete.name);
+        let lengthOfLastName =
+          this.athlete.name.split(" ")[words.length - 1].length;
+        if (lengthOfLastName > 1) {
+          let initial = this.athlete.name.split(" ")[words.length - 1][0];
 
-      let alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-      let groups = [];
-      let groupSize = Math.ceil(alphabet.length / 6);
+          let group = () => {
+            for (let i = 0; i < this.groups.length; i++) {
+              if (this.groups[i].includes(initial.toLowerCase())) {
+                return i;
+              }
+            }
+          };
 
-      while (alphabet.length > 0) {
-        groups.push(alphabet.splice(0, groupSize));
-      }
-
-      let group = () => {
-        for (let i = 0; i < groups.length; i++) {
-          if (groups[i].includes(initial.toLowerCase())) {
-            return i;
+          switch (group()) {
+            case 0:
+              return "bg-avatarPlaceHolder";
+            case 1:
+              return "bg-avatarPlaceHolder2";
+            case 2:
+              return "bg-avatarPlaceHolder3";
+            case 3:
+              return "bg-avatarPlaceHolder4";
+            case 4:
+              return "bg-avatarPlaceHolder5";
+            case 5:
+              return "bg-avatarPlaceHolder6";
           }
         }
-      };
-
-      switch (group()) {
-        case 0:
-          return "bg-avatarPlaceHolder";
-        case 1:
-          return "bg-avatarPlaceHolder2";
-        case 2:
-          return "bg-avatarPlaceHolder3";
-        case 3:
-          return "bg-avatarPlaceHolder4";
-        case 4:
-          return "bg-avatarPlaceHolder5";
-        case 5:
-          return "bg-avatarPlaceHolder6";
       }
 
-      return null;
+      return "bg-avatarPlaceHolder";
     },
   },
 };

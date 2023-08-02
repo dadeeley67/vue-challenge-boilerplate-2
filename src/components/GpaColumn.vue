@@ -1,5 +1,7 @@
 <template>
-  <td :class="gpaColor">{{ gpaToTwoDecimals(gpaSchool) }}</td>
+  <td class="text-center" :class="gpaColor">
+    {{ gpaToTwoDecimals(gpaSchool) }}
+  </td>
 </template>
 
 <script>
@@ -18,21 +20,21 @@ export default {
 
         switch (true) {
           case gpaDiff > 0.1:
-            return "bg-schoolGpaAboveMoreThan text-center";
+            return "bg-schoolGpaAboveMoreThan";
           case gpaDiff > 0.05 && gpaDiff < 0.1:
-            return "bg-schoolGpaAboveLessThan text-center";
+            return "bg-schoolGpaAboveLessThan";
           case gpaDiff > 0 && gpaDiff < 0.05:
-            return "bg-schoolGpaAbove text-center";
+            return "bg-schoolGpaAbove";
           case gpaDiff === 0:
-            return "bg-schoolGpaEqual text-center";
+            return "bg-schoolGpaEqual";
           case gpaDiff > -0.1 && gpaDiff < 0:
-            return "bg-schoolGpaUnder text-center";
+            return "bg-schoolGpaUnder";
           case gpaDiff > -0.2 && gpaDiff < -0.1:
-            return "bg-schoolGpaUnderLessThan text-center";
+            return "bg-schoolGpaUnderLessThan";
           case gpaDiff < -0.2:
-            return "bg-schoolGpaUnderMoreThan text-center";
+            return "bg-schoolGpaUnderMoreThan";
           default:
-            return "text-center";
+            return "bg-schoolGpaEqual";
         }
       },
     },
